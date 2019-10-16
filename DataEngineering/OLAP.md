@@ -20,3 +20,9 @@ OLAP 후보군
   | OLAP | OLTP |
   |:----:|:----:|
   | 의사결정을 위한 정보생성 | 일상적인 업무처리 |
+
+
+• OLAP 비교 
+	- https://medium.com/@leventov/comparison-of-the-open-source-olap-systems-for-big-data-clickhouse-druid-and-pinot-8e042a5ed1c7
+• GraphQL
+https://medium.com/devgorilla/what-is-graphql-f0902a959e4
