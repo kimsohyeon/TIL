@@ -4,7 +4,7 @@ https://www.digitalocean.com/community/tutorials/how-to-install-and-use-clickhou
 - database - table 구조
 - 일반적인 RDB의 create문과 유사
 - engine은 데이터의 물리구조, 질의성능을 정함
-  -mergetree를 일반적으로 사용 
+  -mergetree를 일반적으로 사용
   - => sorting by primary key, partitioning of rows, replicating, sampling data
 
 
@@ -40,6 +40,11 @@ ORDER BY id;
 2. inserting, updating, and deleing data and columns
 
 - 컬럼을 스키마에 추가, 삭제하는 것이 쉬움
+
+- insert parquet
+```
+cat {filename} | clickhouse-client --query="INSERT INTO {some_table} FORMAT Parquet"
+```
 
 ```
 ALTER TABLE table_name ADD COLUMN column_name column_type;
