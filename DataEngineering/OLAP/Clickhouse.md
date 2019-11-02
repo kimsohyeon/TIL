@@ -8,16 +8,15 @@ ClickHouse의 Engine은 데이터의 물리구조와 질의성능을 정함 \
 
 
 MergeTree Parameters
-
-[Example]
-```
-ENGINE = MergeTree(Date, ID, 8192)
-```
 - date column
-- sampling expression
+- (option) sampling expression
 - primary key tuple
 - index (Primary Key) granularity
 
+[Example]
+```
+ENGINE = MergeTree(Date, (UserID, Query, MappingKey, Timstamp), 8192)
+```
 
 MergeTree Features
 - sorting by primary key
@@ -62,15 +61,15 @@ CREATE TABLE click
     ID String,
     Date Date,
     Timestamp DateTime,
-    MappingKey Nullable(String),
-    UserID Nullable(String),
+    MappingKey String,
+    UserID String,
     Tab Nullable(String),
     DocID Nullable(String),
-    Query Nullable(String),
+    Query String,
     Day Nullable(UInt64),
     Hour Nullable(UInt64),
     Order Nullable(UInt64)
-) ENGINE = MergeTree(Date, ID, 8192);
+) ENGINE = MergeTree(Date, (UserID, Query, MappingKey, Timstamp), 8192);
 ```
 
 
