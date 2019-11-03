@@ -72,7 +72,9 @@ CREATE TABLE click
 ) ENGINE = MergeTree(Date, (UserID, Query, MappingKey, Timstamp), 8192);
 ```
 
-
+> 같은 row를 가지더라고 parquet은 하나의 파일로 안들어가고 json은 하나의 파일로 들어감\
+parquet은 repartition해서 여러개의 파일로 만든뒤에 for loop로 넣음\
+Parquet : 1.2G , JSONEachRow : 2.9G
 
 > sorting by primary key = 어떤 상황에서 중요한 feature인가?\
 -> primary key를 유저id로 정하면 UV를 구하기 쉽다.?\
