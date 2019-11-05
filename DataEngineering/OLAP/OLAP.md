@@ -2,11 +2,17 @@
 
 기존에 사용하고 있는 ElasticSearch의 장단점을 살펴보고 대안이 될 수 있는 OLAP 후보군에 대해 알아보자
 
+- 하둡기반 SQL 시스템(Hive, Impala, Presto, Spark)보다 질의 속도가 빠르다.
+  - 인덱싱에 최적화된 구조를 사용
+  - 상대적으로 노드 사이에 데이터 이동이 없음
+  - -> 질의 속도는 빠르지만 커다란 두 테이블 조인이 안됨   
+
 OLAP 후보군
 - ElasticSearch
 - ClickHouse
 - Druid
 - Kudu
+
 
 
 # OLAP란?
@@ -22,7 +28,5 @@ OLAP 후보군
   | 의사결정을 위한 정보생성 | 일상적인 업무처리 |
 
 
-• OLAP 비교 
-	- https://medium.com/@leventov/comparison-of-the-open-source-olap-systems-for-big-data-clickhouse-druid-and-pinot-8e042a5ed1c7
-• GraphQL
-https://medium.com/devgorilla/what-is-graphql-f0902a959e4
+- OLAP 비교 : https://medium.com/@leventov/comparison-of-the-open-source-olap-systems-for-big-data-clickhouse-druid-and-pinot-8e042a5ed1c7
+- GraphQL : https://medium.com/devgorilla/what-is-graphql-f0902a959e4
