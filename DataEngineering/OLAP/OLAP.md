@@ -21,7 +21,7 @@ OLAP 후보군
 - 대규모 데이터를 큐브형태로 다루며 다차원 정보를 실시간으로 분석할 수 있다.
 - __FASMI__ __F__ast __A__nalysis of __S__hared __M__ultidimensional __I__nformation
   실시간 / 편리한 분석 / 멀티 엑세스 / 다차원
-- 큰 데모 데이터(성연령)와 실시간성 데이터(작은 사이즈)의 데이터를 조인할때는 OLAP가 유용하다. 
+- 큰 데모 데이터(성연령)와 실시간성 데이터(작은 사이즈)의 데이터를 조인할때는 OLTP(Hbase, redis?)가 유용하다.
 
 
 - OLAP 비교 : https://medium.com/@leventov/comparison-of-the-open-source-olap-systems-for-big-data-clickhouse-druid-and-pinot-8e042a5ed1c7
