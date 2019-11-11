@@ -36,6 +36,7 @@ ENGINE = MergeTree(Date, (UserID, Query, MappingKey, Timstamp), 8192)
 
 MergeTree Features
 - sorting by primary key
+![primary key sorting](../참고자료/이미지/clickhouse_mergetree_primary_key_sorting00.png)
 - partitioning of rows
 - replication
 - sampling data
