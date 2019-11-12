@@ -36,13 +36,14 @@ ENGINE = MergeTree(Date, (UserID, Query, MappingKey, Timstamp), 8192)
 
 MergeTree Features
 - sorting by primary key
-![primary key sorting](../참고자료/이미지/clickhouse_mergetree_primary_key_sorting00.png)
 - partitioning of rows
 - replication
 - sampling data
 
 - primary key기준으로 mark
     - primary key로 선정한 필드를 기준으로 group by, unique count를 할때 빠름
+
+![primary key sorting](../참고자료/이미지/clickhouse_mergetree_primary_key_sorting00.png)
 
 ```
 SELECT COUNT(DISTINCT UserID)
@@ -57,7 +58,7 @@ SELECT UserID, COUNT(*)
 FROM click
 GROUP BY UserID;
 
-multikey 0.014 sec
+multikey 0.821 sec
 ```
 
 
@@ -132,10 +133,6 @@ CREATE TABLE click
 ) ENGINE = MergeTree(Date, (UserID, Query, MappingKey, Timstamp), 8192);
 ```
 
-> 같은 row를 가지더라고 parquet은 하나의 파일로 안들어가고 json은 하나의 파일로 들어감<br>
-parquet은 repartition해서 여러개의 파일로 만든뒤에 for loop로 넣음<br>
-Parquet : 1.2G , JSONEachRow : 2.9G
-
 > sorting by primary key => primary key로 정해진 필드를 기준으로 group by를 할때 유용<br>
 -> primary key를 유저id로 정하면 UV를 구하는 속도가 빨라짐 <br>
 
@@ -156,6 +153,10 @@ OPTIMIZE TABLE click PARTITION 201910;
 ```
 cat {filename} | clickhouse-client --query="INSERT INTO {some_table} FORMAT Parquet"
 ```
+
+> 같은 row를 가지더라고 parquet은 하나의 파일로 안들어가고 json은 하나의 파일로 들어감<br>
+parquet은 repartition해서 여러개의 파일로 만든뒤에 for loop로 넣음<br>
+Parquet : 1.2G , JSONEachRow : 2.9G
 
 ### 3. Inserting, Updating, And Deleing Data And Columns
 

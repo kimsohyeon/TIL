@@ -24,5 +24,66 @@ OLAP 후보군
 - 큰 데모 데이터(성연령)와 실시간성 데이터(작은 사이즈)의 데이터를 조인할때는 OLTP(Hbase, redis?)가 유용하다.
 
 
+
+# 질의 속도에 영향을 주는 기법들
+
+| Doc ID |	Country |	Browser |	Locale |	Impressions |
+| :----- | :----- | :------ | :------ | :------ |
+| 0 |	CA |	Chrome |	en |	400
+| 1 |	CA |	Firefox |	fr |	200
+| 2 |	MX |	Safari |	es |	300
+| 3 |	MX |	Safari |	en | 	100
+| 4 |	USA |	Chrome |	en |	600
+| 5 |	USA |	Firefox |	es |	200
+| 6 |	USA |	Firefox |	en |	400
+
+
+- Sorted index
+| Country |	Doc | ID
+|:-------- | :----- | :----|
+| CA |	0-1
+| MX |	2-3
+| USA |	4-6
+
+```
+SELECT SUM(Impressions) FROM Table WHERE Country = ‘USA’
+```
+USA를 찾는데 걸리는 시간 O(n) -> O(1)
+Primary key에 대해서만 적용할 수 있고, aggregation cost는 f(3)이다.
+
+- Inverted index
+| Browser |	Doc ID |	Locale |	Doc ID |
+|:------- | :------ | :------ | :------ |
+| Chrome |	0,4 |	en 	| 0,3,4,6
+| Firefox |	1,5,6 |	es 	| 2,5
+| Safari |	2,3 |	fr 	| 1
+
+```
+SELECT SUM(Impressions) FROM Table WHERE Browser = ‘Firefox’
+```
+Firefox를 찾는데 걸리는 시간 O(n) -> O(1)
+aggregation cost는 f(3)이다.
+
+- Pre-aggregation
+| Country |	Impressions |
+| :------ | :---------- |
+| CA | 	600 |
+| MX | 	400 |
+| USA |	1200 |
+
+```
+SELECT SUM(Impressions) FROM Table WHERE Country = ‘USA’
+```
+aggregation 값을 바로 얻을 수 있다.
+아래와 같이 조건으로 쓰이는 dimension이 많아질 수 록 저장 공간을 많이 차지함
+```
+SELECT SUM(Impressions) FROM Table WHERE Country = ‘USA’ AND Browser = ‘Firefox’ AND Locale = ‘en’
+```
+
+
+
+
+
 - OLAP 비교 : https://medium.com/@leventov/comparison-of-the-open-source-olap-systems-for-big-data-clickhouse-druid-and-pinot-8e042a5ed1c7
+- 질의 속도에 영향을 주는 기법들 : https://engineering.linkedin.com/blog/2019/06/star-tree-index--powering-fast-aggregations-on-pinot
 - GraphQL : https://medium.com/devgorilla/what-is-graphql-f0902a959e4
