@@ -82,6 +82,21 @@ WHERE table = 'click'
 |  201910    |  20191020_20191020_9_9_0   |   1 |
 |  201910    |  20191020_20191020_10_10_0 |   1 |
 
+> 데이터를 넣고 15분 뒤에 merging 됨\
+15분뒤에 active가 모두 1로 바뀜
+
+
+## Cluster
+- Homogenous Cluster : master node가 따로 없음
+- Replication
+  - table 단위
+  - ReplicatedMergerTree로 create table을 하고 data를 넣으면 자동으로 replica가 생성
+  - ZooKeeper 필수 조건 : clickhouse와 다른 서버에 zookeeper를 설치
+  - ENGINE = ReplicatedMergeTree('zookeeper_path', '{replica_name}', <date_partition_column>, (sort columns), 8192)
+- load balancer : distributed engine
+
+
+
 
 
 
@@ -193,3 +208,4 @@ service -> serviceapp, servicenavi
 - ClickHouse Input/Output Data Formats : https://clickhouse.yandex/docs/en/interfaces/formats/
 - ClickHouse Partition : https://clickhouse.yandex/docs/en/operations/table_engines/custom_partitioning_key/
 - ClickHouse Cluster : https://clickhouse.yandex/blog/en/evolution-of-data-structures-in-yandex-metrica
+- Replication and Distributed on ClickHouse : https://blog.uiza.io/replicated-vs-distributed-on-clickhouse-part-1/
