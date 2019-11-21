@@ -14,9 +14,9 @@ Swagger : API를 자동으로 문서화 해주는 프레임워크
 web framework 리스트
 - Play2
 - akka http
-- lagom
-- finatra
 - scalatra
+- finatra
+
 
 
 ### Play2
@@ -44,7 +44,7 @@ def action = Action { implicit request =>
 echo server를 개발하기 위해 고쳐야 되는 부분은 (dependency 부분 제외하고) [app/controllers](Play2_examples/app/controllers), [conf/routers](Play2_examples/conf/routers) 이다.
 
 Swagger는 [Swagger Play2 Module](https://github.com/swagger-api/swagger-play/tree/master/play-2.7/swagger-play2)를 사용한다.\
-controller 부분에 swagger api annotation을 붙이면 자동으로 swagger 문서에 API를 추가할 수 있다.
+controller 부분에 swagger api annotation을 붙이면 자동으로 swagger 문서에 API를 추가할 수 있다. \
 추가로 [conf/application.conf](Play2_examples/conf/application.conf)에 문서 상단에 들어갈 info를 정의한다.
 
 
@@ -54,6 +54,18 @@ https://petstore.swagger.io/?url=http://localhost:9000/swagger.json \
 이때, CORS(Cross-Origin Resource Sharing)문제가 발생하면 [conf/application.conf](Play2_examples/conf/application.conf)에 CORS 설정을 해준다. \
 *CORS : 도메인 또는 포트가 다른 서버의 자원을 요청하는 매커니즘
 
+#### sbt packageBin
+1. packager 가능하도록 JavaServerAppPacking 플러그인 추가
+1. palyGenerateSecret으로 키 생성 : https://www.playframework.com/documentation/2.7.x/ApplicationSecret
+1. 아래의 명령으로 압축된 zip 파일 만들기 (app/target/universal 폴더 확인)
+```
+sbt dataflow-api/universal:packageBin
+```
+2. unzip하고 서버 실행하기
+```
+unzip [zip 파일]
+bin/dataflow-api
+```
 
 
 
