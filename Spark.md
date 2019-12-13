@@ -1,5 +1,7 @@
 # Spark Tips
 
+## mapPartition()
+
 ## 두개의 DataFrame 합치기 (zip two DataFrame)
  *join, zip은 연산량이 많기 때문에 되도록 피하는 것이 좋다!!*
 
