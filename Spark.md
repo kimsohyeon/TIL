@@ -1,18 +1,27 @@
 # Spark Tips
 
 ## Spark Serializable
-[참고 블로그](https://12bme.tistory.com/436)
-[serializable challenbes with spark and scala](https://medium.com/onzo-tech/serialization-challenges-with-spark-and-scala-a2287cd51c54)
+[참고 블로그](https://12bme.tistory.com/436)\
+[serializable challenbes with spark and scala](https://medium.com/onzo-tech/serialization-challenges-with-spark-and-scala-a2287cd51c54)\
 Spark API에서 제공하는 데이터형식 RDD, Datafame, Dataset에 적용하는 함수는 executor가 데이터의 각 세그먼트를 처리하기 때문에 직렬화가능(serializable)해야 된다.\
-따라서 Spark API 에서 제공하는 함수(filter, map, ...)안에서 사용되는 클래스도 직렬화가능(serializable)해야된다.
+따라서 Spark API 에서 제공하는 함수(filter, map, ...)안에서 사용되는 클래스도 직렬화가능(serializable)해야된다.\
 예를 들어, dataframe은 serializable하지 않기 때문에 df1.rdd.map{ ... df2 ... } 와 같이 사용할 수 없다.
 
 또한, 드라이버 프로그램에서 정의한 변수를 Spark API 함수에서 변경해도 executor가 처리하기 떄문에 드라이버 프로그램에서는 변경한 내용을 볼 수 없다.
 
 ## mapPartitions()
 [참고 stackoverflow](https://stackoverflow.com/a/39203798/5867255)
-heavyweight initialization이 있을 경우는 mapPartition을 쓰는 것이 좋다.
-예를 들어서 DB 커넥션을 한번만 맺어서 처리할때는 map보다는 mapPartition을 사용.
+
+```
+def map[U: ClassTag](f: T => U): RDD[U]
+```
+
+```
+def mapPartitions[U: ClassTag](f: Iterator[T] => Iterator[U], preservesPartitioning: Boolean = false): RDD[U]
+```
+
+heavyweight initialization이 있을 경우는 mapPartition을 쓰는 것이 좋다.\
+예를 들어서 DB 커넥션을 한번만 맺어서 처리할때는 map보다는 mapPartition을 사용.\
 map은 row 각각을 변환하고 mapPartition은 partition(row set)을 변환한다.
 
 ```
