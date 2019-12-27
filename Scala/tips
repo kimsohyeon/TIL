@@ -1,0 +1,9 @@
+# Scala Tips
+
+## val def
+Scala에서는 val, var, def, lazy val로 명명 가능하다.
+
+val - 정의될 때 실행
+lazy val - 처음 사용될 때 실행
+def - 사용될 때 마다 실행
+ 
