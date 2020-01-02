@@ -48,6 +48,24 @@ case Success(line) => log(s"the longest line is '$line'")
 }
 ```
 
+
+#### flatMap
+두개의 Future를 연결해서 새로운 Future을 만듬
+```
+val netiquette = Future { Source.fromURL("http://www.ietf.org/rfc/rfc1855.txt").mkString }
+val urlSpec = Future { Source.fromURL("http://www.w3.org/Addressing/URL/url-spec.txt").mkString }
+val answer = netiquette.flatMap { nettext =>
+  urlSpec.map { urltext =>
+    "First, read this: " + nettext + ". Now, try this: " + urltext
+  }
+}
+
+answer foreach {
+  case contents => log(contents)
+}
+```
+
+
 #### for comprehension
 ```
 val gitignoreFile = Future { Source.fromFile(".gitignore-SAMPLE").getLines }
@@ -74,21 +92,6 @@ val asyncComputation = async {
 }
 ```
 
-#### flatMap
-두개의 Future를 연결해서 새로운 Future을 만듬
-```
-val netiquette = Future { Source.fromURL("http://www.ietf.org/rfc/rfc1855.txt").mkString }
-val urlSpec = Future { Source.fromURL("http://www.w3.org/Addressing/URL/url-spec.txt").mkString }
-val answer = netiquette.flatMap { nettext =>
-  urlSpec.map { urltext =>
-    "First, read this: " + nettext + ". Now, try this: " + urltext
-  }
-}
-
-answer foreach {
-  case contents => log(contents)
-}
-```
 
 ### Future.sequence
 List[Future[T]] => Future[List[T]]
