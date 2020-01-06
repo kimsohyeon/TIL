@@ -2,6 +2,8 @@
 
 ## Future
 Future는 독립적인 쓰레드로 처리된다.  
+future is a placeholder object for a value that may be become available at some point in time, asynchronously.  
+It is not the asynchronous computation itself.
 ```
 object FuturesComputation extends App {
   import scala.concurrent._
@@ -121,4 +123,5 @@ val x = Future.sequence(List(x1, x2, x3))
 
 
 
-참고 자료 : https://hamait.tistory.com/763?category=79134
+참고 자료 : https://hamait.tistory.com/763?category=79134  
+https://stackoverflow.com/questions/18960339/clarification-needed-about-futures-and-promises-in-scala
