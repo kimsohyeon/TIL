@@ -1,5 +1,13 @@
 # Spark Tips
 
+## Broadcast Joins (Map-Side Joins)
+한 테이블의 크기가 다른 테이블에 비해 매우 작을 경우 Broadcast Join이 Hash Join에 비해 성능이 좋다.  
+spark sql은 한 테이블의 크기가 spark.sql.autoBroadcastJoinThreshold 보다 작을 경우 Broadcast Join을 수행한다.  
+큰 테이블의 모든 데이터를 network로 보내는 것을 방지한다.  
+
+참고 자료 : https://jaceklaskowski.gitbooks.io/mastering-spark-sql/spark-sql-joins-broadcast.html
+
+
 ## Spark Serializable
 [참고 블로그](https://12bme.tistory.com/436)\
 [serializable challenbes with spark and scala](https://medium.com/onzo-tech/serialization-challenges-with-spark-and-scala-a2287cd51c54)\
