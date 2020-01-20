@@ -28,9 +28,9 @@ def map[U: ClassTag](f: T => U): RDD[U]
 def mapPartitions[U: ClassTag](f: Iterator[T] => Iterator[U], preservesPartitioning: Boolean = false): RDD[U]
 ```
 
-heavyweight initialization이 있을 경우는 mapPartition을 쓰는 것이 좋다.\
+heavyweight initialization이 있을 경우는 mapPartitions을 쓰는 것이 좋다.\
 예를 들어서 DB 커넥션을 한번만 맺어서 처리할때는 map보다는 mapPartition을 사용.\
-map은 row 각각을 변환하고 mapPartition은 partition(row set)을 변환한다.
+map은 row 각각을 변환하고 mapPartitions은 partition(row set)을 변환한다.
 
 ```
 val newRd = myRdd.mapPartitions(partition => {
@@ -43,6 +43,20 @@ val newRd = myRdd.mapPartitions(partition => {
   connection.close() // close dbconnection here
   newPartition.iterator // create a new iterator
 })
+```
+
+mapPartitions의 iter는 서브 데이터 셋의 시작점을 가르키는 커서이다.
+iter가 가르키는 서브 데이터 셋을 한번에 메모리에 올리기 위해서는 grouped를 사용한다.
+```
+//sudo code 문법적으로 틀릴 수 있음
+case class Log(id: String, etc)
+
+DataSet[Log].mapPartitions{ iter =>
+  iter.grouped(100).map{ logs =>
+    val ids = logs.map{ log => log.id}
+    asyncCache.getsOrElseUpdate(ids)
+  }.reduce(_ ++ _)
+}
 ```
 
 
