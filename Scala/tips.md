@@ -1,5 +1,35 @@
 # Scala Tips
 
+## Multiple Parameter Lists
+여러개의 괄호를 사용해서 함수를 정의하면 좀 더 심플하게 함수를 사용할 수 있다.
+1. fluent API
+함수 파라미터를 사용할 때
+```
+def unless(exp: Boolean)(f: => Unit): Unit = if (!exp) f
+unless(x < 5) {
+  println("x는 5보다 작지 않다.")
+}
+```
+2. Implicit Parameters
+파라미터 중 하나만 implicit를 지정하고 싶을 때
+```
+def foo(a: Int)(b: Implicit Int): Int
+```
+3. For type inference
+type inference를 사용할 때
+```
+def foldLeft[B](z: B)(op: (B, A) => B): B
+List("").foldLeft(0)(_ + _.length)
+```
+```
+def foldLeft[B](z: B, op: (B, A) => A): B
+List("").foldLeft[Int](0, _ + _.length)
+List("").foldLeft(0, (b: Int, a: String) => b + a.length)
+```
+
+참고자료 : https://docs.scala-lang.org/style/declarations.html
+
+
 ## val def
 Scala에서는 val, var, def, lazy val로 명명 가능하다.
 
