@@ -1,3 +1,22 @@
+# 2020-03-03
+scala에서 while문 사용은 지양하고 recursive function을 사용한다.  
+시계열 DB  
+스로틀링  
+
+listbuffer 때문에 oom이 나는 것을 방지하기 위해 아래와 같이 변경   
+.flatten.toList 붙이면 확인 가능
+```
+class A(val end : Int) {
+  var i = 0
+  def get : Option[Int] = {
+    i += 1
+    if (i<= end) Some(i) else None
+  }
+}
+  val a = new A(10)
+  Iterator.continually(a.get).takeWhile(_.nonEmpty)
+```
+
 # 2020-03-02
 kafka record meta
 https://stackoverflow.com/questions/54595952/how-to-ensure-messages-reach-kafka-broker
