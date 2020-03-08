@@ -1,3 +1,6 @@
+# 2020-03-05
+ssl
+deploy 시에 node가 100개 있을때, 100개 한번에 배포하는게 하니라 n개씩 배포함 
 # 2020-03-03
 scala에서 while문 사용은 지양하고 recursive function을 사용한다.  
 시계열 DB  
@@ -6,7 +9,7 @@ scala에서 while문 사용은 지양하고 recursive function을 사용한다.
 listbuffer 때문에 oom이 나는 것을 방지하기 위해 아래와 같이 변경   
 .flatten.toList 붙이면 확인 가능  
 iterator는 모든 element를 메모리에 올리는게 아니라, 처리할 때 마다 올린다.
-while문을 scala에서는 iterator로 아래와 같이 구연할 수 있음 
+while문을 scala에서는 iterator로 아래와 같이 구연할 수 있음
 ```
 class A(val end : Int) {
   var i = 0
