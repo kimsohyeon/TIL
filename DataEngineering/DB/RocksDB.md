@@ -1,0 +1,20 @@
+# RocksDB
+  - kafka로 데이터를 보내기 전에 데이터를 저장해서 안정성을 높일 수 있다.
+  - key - value
+  - flash, RAM의 빠른 읽기/쓰기 성능을 활용할 수 있음
+  - HBase와 같은 lsm tree => write 속도가 높음
+  - database마다 filepath 필요
+  - WriteBatch : 실행 이력 collection, disk에 넣기전까지의 기록을 가지고 있음, 사이즈 지정 가능
+  - compress : filesystem에 데이터를 저장할때 압축해서 저장
+  - point lookup, range scan 가능
+  - ColumnFamily
+    - 여러개의 ColumnFamily를 만들 수 있음
+    - 활용
+      - 1. 데이터 타입별로 세팅을 달리 할때
+      - 2. ColumnFamily별로 데이터 삭제 가능
+      - 3. 메타 데이터, 실제 데이터 따로 다룰 수 있음   
+  - Queue로 활용하기
+    - key를 만들 때, queue_id + sequence_id 조합으로 만들어서 여러개의 큐를 구현할 수 있다.
+    - 여러개의 thread가 동시에 접근할 때 sync 하게 처리 할 수 있어야 된다.
+    - 변경 이력이 많을 경우 seekToFirst는 빠르지 않다.  
+    - Column Family를 두개로 나눠서 하나는 현재 인덱스 보관용, 하나는 데이터 큐로 사용한다. (서버 다운시 시작 지점 저장)
