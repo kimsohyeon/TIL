@@ -1,5 +1,47 @@
 # Scala Tips
 
+## trait, abstract class
+한 클래스는 하나의 클래스만 상속 받을 수 있다.   
+mixin은 trait를 이용한다.
+
+```
+trait T1
+trait T2
+class P1
+class P2
+
+class C1 extends T1
+class C2 extends T1 with T2
+class C3 extends T2 with T1
+class C4 extends P1 with T1
+/// class C5 extends T1 with P1 // invalid
+/// class C6 extends P1 with P2 // invalid
+```
+https://stackoverflow.com/questions/41031166/scala-extends-vs-with
+
+
+- abstract class
+    - abstract method, non-abstract method 둘 다 정의 가능
+    - 다중 상속 지원하지 않음
+- trait
+    - abstract method, non-abstract method 둘 다 정의 가능
+    - 다중 상속 지원
+    - 인스턴스에 추가 가능
+    ```
+    class DavidBanner
+
+    trait Angry {
+      println("You won't like me ...")
+    }
+
+    object Test extends App {
+      val hulk = new DavidBanner with Angry
+    }
+    ```
+    - constructor parameter 정의 안됨  
+
+
+
 ## Multiple Parameter Lists
 여러개의 괄호를 사용해서 함수를 정의하면 좀 더 심플하게 함수를 사용할 수 있다.
 1. fluent API
