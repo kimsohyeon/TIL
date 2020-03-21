@@ -1,6 +1,6 @@
 # Exception 처리 방법
 
-## try - catch 구문 
+## try - catch 구문
 
 1. Option을 return 값으로 사용한다.
 ```

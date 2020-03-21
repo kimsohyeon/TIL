@@ -1,9 +1,8 @@
 # Scala Future
 
 ## Future
-Future는 독립적인 쓰레드로 처리된다.  
-future is a placeholder object for a value that may be become available at some point in time, asynchronously.  
-It is not the asynchronous computation itself.
+Future는 비동기적으로 처리된다.
+Future는 미래에 사용 가능한 값을 포함하는 placeholder 이다.
 ```
 object FuturesComputation extends App {
   import scala.concurrent._
@@ -15,6 +14,14 @@ object FuturesComputation extends App {
 
   log(s"the future is coming")
 }
+```
+Future는 결과값/exception을 랩핑하고 있다.
+```
+\\ Got it 프린트되지 않음
+try { Future(throw new RuntimeException(""))} catch { case ex => println("Got it") }
+\\ Got it 프린트됨
+\\ None일 때 Exception에 따라 값을 반환해 복구하는 recover 함수
+Future(throw new RuntimeException("")).recover { case ex => println("Got it") }
 ```
 
 ### Future와 콜백
