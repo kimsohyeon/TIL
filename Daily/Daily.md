@@ -1,6 +1,13 @@
+# 2020-03-30
+sql 결과값을 하나의 string 값으로 가져오기
+```
+import sparkSession.implicits._
+sparkSession.sql(option.condition).as[String].take(1).headOption.getOrElse("")
+```
+
 # 2020-03-05
 ssl
-deploy 시에 node가 100개 있을때, 100개 한번에 배포하는게 하니라 n개씩 배포함 
+deploy 시에 node가 100개 있을때, 100개 한번에 배포하는게 하니라 n개씩 배포함
 # 2020-03-03
 scala에서 while문 사용은 지양하고 recursive function을 사용한다.  
 시계열 DB  
