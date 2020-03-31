@@ -1,5 +1,33 @@
 # Scala Tips
 
+## 한 줄로 여러개의 variable 정의하기
+```
+scala> val args ="a:b:c"
+args: String = a:b:c
+scala> val (name :: params) = args.split(":").toList
+name: String = a
+params: List[String] = List(b, c)
+
+scala> val x, y, z = 1
+x: Int = 1
+y: Int = 1
+z: Int = 1
+
+scala> val a, b, c:String = ""
+a: String = ""
+b: String = ""
+c: String = ""
+
+scala> var (x, y, z) = (0, 1.1, "foo")
+x: Int = 0
+y: Double = 1.1
+z: java.lang.String = foo
+
+scala> val a, b, c:String = _
+<console>:1: error: unbound placeholder parameter
+       val a, b, c:String = _
+```
+
 ## trait, abstract class
 한 클래스는 하나의 클래스만 상속 받을 수 있다.   
 mixin은 trait를 이용한다.
