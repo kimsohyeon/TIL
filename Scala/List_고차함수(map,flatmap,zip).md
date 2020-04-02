@@ -1,10 +1,31 @@
 # List 활용
 
+## List Array
+- 차이점   
+  - 리스트는 변경 불가능, 리스트 원소를 할당문으로 변경하지 못함  
+  - 리스트의 구조는 재귀적(예 :연결 리스트), 배열은 평면적  
+- 공통점
+  - 리스트 배열 모두 속한 모든 원소의 타입은 동일
+
+## List 생성
+- 모든 리스트는 `Nil`과 `::`(콘즈)로 만듦
+- `Nil`은 빈 리스트를 의미
+- 중위 연산자 `::`은 리스트의 앞에 원소를 추가
+- `x :: xs`는 첫번째 원소가 x이고 그 뒤에 xs리스트(의 원소들)가 오는 리스트를 나타냄
+```
+val fruit = "apples" :: ("oranges" :: ("pears" :: Nil))
+```
+
+## List 연결
+```
+List(1, 2) ::: List(3, 4, 5) // List(1,2,3,4,5)
+```
+
 ## 길이 구하기
 ```
 val a = List(1,2,3)
 a.length // 3
-a.isEmpty // a.length == 0 이 더 비쌈
+a.isEmpty // a.length == 0 이 더 비쌈, length는 리스트의 끝을 찾기 위해 전체 리스트 순회
 ```
 
 ## 양 끝에 접근하기
@@ -22,7 +43,8 @@ val a = List(1,2,3,4)
 a.reverse // List(4,3,2,1)
 ```
 
-## drop / take / splitAt
+## 접두사 / 접미사
+`drop` / `take` / `splitAt`
 ```
 val a = List(1,2,3,4)
 a.take(2) // List(1,2)
@@ -43,19 +65,24 @@ val a = List(List(1,2), List(3))
 a.flatten // List(1,2,3)
 ```
 
-## zip / zipWithIndex
+## zip / zipWithIndex / unzip
 ```
 val a = List(1,2,3)
 val b = List('a','b','c')
-a.zip(b) // List((1,'a'), (2,'b'), (3,'c'))
+val c = a.zip(b) // List((1,'a'), (2,'b'), (3,'c'))
 b.zipWithIndex // List(('a',0),('b',1),('c',2))
+c.unzip // (List(1,2,3), List('a', 'b', 'c'))
 ```
 
-## toString / mkString
+## toString / mkString / addString
 ```
 val a = List('a','b','c','d')
 a.toString // List(a,b,c,d): mkString
-a.mkString("[", ",", "]") // [a,b,c,d] 리스트 앞,중간,뒤에 들어갈 문자
+a.mkString("[", ",", "]") // [a,b,c,d] 리스트 앞,중간,뒤에
+들어갈 문자
+
+val buf = new StringBuilder
+a.addString(buf,"[", ",", "]") // [a,b,c,d,e]: StringBuilder
 ```
 
 ## iterator / toArray / copyToArray
@@ -115,22 +142,22 @@ var sum = 0
 n.foreach(sum += _) // sum = 10
 ```
 
-## filter
+## 리스트 걸러내기
+`filter` / `partition` / `find` / `takeWhile` / `dropWhile` / `span`
+
 ```
-val n = List(1,2,3,4)
-n.filter(_ % 2 == 0) // List(2,4)
+List(1,2,3,4).filter(_ % 2 == 0) // List(2,4)
+List(1,2,3,4).partition(_ % 2 == 0) // (List(2,4), List(1,3))
+List(1,2,3,4).find(_ % 2 == 0) // Some(2) 첫번째 원소
+List(1,2,3,-4,5).takeWhile(_ > 0) // List(1,2,3)
+List(1,2,3,-4,5).dropWhile(_ > 0) // List(-4, 5)
+List(1,2,3,-4,5)span(_ > 0) // (List(1,2,3), List(-4,5))
 ```
 
-## partition
+## forall / exists
 ```
-val n = List(1,2,3,4)
-n.partition(_ % 2 == 0) // (List(2,4), List(1,3))
-```
-
-## find
-```
-val n = List(1,2,3,4)
-n.find(_ % 2 == 0) // Some(2) 첫번째 원소
+List(1,2,3).forall(_ == 1) // false
+List(1,2,3).exists(_ == 1) // true
 ```
 
 ## sortWith
@@ -152,7 +179,7 @@ val numbers = List(1,7,2,9)
 numbers.foldLeft(0)((m: Int, n: Int) => m + n)
 ```
 ```
-// hook을 차례대로 적용할 수 있음 
+// hook을 차례대로 적용할 수 있음
 getHooks.foldLeft(df){(df, h) =>
   h.run(sparkSession, df)}
 ```
