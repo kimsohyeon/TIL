@@ -1,5 +1,10 @@
 # Scala Tips
 
+## for - yield
+```
+val a =  for(i <- 1 to 3) yield i // Vector(1,2,3)
+```
+
 ## 한 줄로 여러개의 variable 정의하기
 ```
 scala> val args ="a:b:c"
