@@ -7,6 +7,67 @@ spark sql은 한 테이블의 크기가 spark.sql.autoBroadcastJoinThreshold 보
 
 참고 자료 : https://jaceklaskowski.gitbooks.io/mastering-spark-sql/spark-sql-joins-broadcast.html
 
+## Spark Transformations
+map reduce와 같은 작업에서 transformation이 데이터 셔플을 요구할 경우, OOM 에러가 발생할 수 있다.  
+job에 맞는 적절한 transformation을 쓰는게 중요하다.  
+
+
+### reduceByKey & groupByKey
+
+> map-side combine이란, 셔플 이전 단계에서 파티션 내에서 같은 키를 가지는 값들끼리 미리 combine 연산을 한 후에 다음 단계로 내보내는 것을 말합니다.   이렇게 하면 네트워크를 타고 넘어가는 데이터의 크기도 적고, 셔플 이후 단계에서 메모리에 올려야 하는 레코드의 수도 줄어들기 때문에 훨씬 효율적입니다.  
+
+#### reduceByKey
+key-value pair `(K,V)`의 RDD를 `K`가 같은 것들끼리 그룹으로 묶어서 주어진 reduce 연산을 적용, 하나의 값으로 만듬
+**map side combine 구현**, suffled data 낮춰서 OOM 방지  
+한 `V`에 다른 `V`를 하나씩 적용하는 방식이기 때문에, sum, max, min 등에 적용가능
+평균, 표준편차 구하기 어려움   
+```
+val words = input.flatMap(v => v.split(" ")).map(v => (v, 1))
+val wordcount = words.reduceByKey(_+_)
+```
+
+#### groupByKey
+key-value pair `(K,V)`의 RDD를 `K`가 같은 것들끼리 그룹으로 묶어서 키-그룹 순서쌍의 RDD를 만듬
+`RDD[(K,V)] => RDD[(K, Iterable[V])]`
+`Iterable[V]`에 대해 자유롭게 원하는 작업을 할 수 있음
+그룹 내의 원소를 반드시 전부 메모리에 올려놓고 계산을 해야되는 경우
+**reduceByKey, aggregateByKey가 더 효율적임. groupByKey는 map-side combine을 하지 않음. OOM 발생 가능함**
+
+#### groupByKey 대신에 reduceByKey 사용하기
+```
+// RDD of (date, book_id, revenue)
+val revenueByBook: RDD[(LocalDate, String, Long)]
+
+// using groupByKey
+val revenueByDay1: RDD[(LocalDate, Double)] = revenueByBook
+  .map({case (date, bookId, revenue) => (date, revenue)})
+  .groupByKey()
+  .mapValues({case (scores: Iterable[Long]) =>
+    val scoresArray = scores.toArray
+    val sum = scoresArray.sum
+    val count = scoresArray.length
+    sum.toDouble / count
+  })
+
+// using reduceByKey
+val revenueByDay2: RDD[(LocalDate, Double)] = revenueByBook
+  .map({case (date, bookId, revenue) => (date, (revenue, 1))})
+  .reduceByKey({
+    case ((sum1, count1), (sum2, count2)) => (sum1+sum2, count1+count2)
+  })
+  .mapValues({case (sum, count) =>
+      sum.toDouble / count
+  })
+
+```
+
+* reduceByKey 와 groupByKey 차이 : https://www.ridicorp.com/blog/2018/10/04/spark-rdd-groupby/
+
+
+
+
+
+참고 자료 : https://technology.finra.org/code/using-spark-transformations-for-mpreduce-jobs.html
 
 ## Spark Serializable
 [참고 블로그](https://12bme.tistory.com/436)\
@@ -17,7 +78,7 @@ Spark API에서 제공하는 데이터형식 RDD, Datafame, Dataset에 적용하
 
 또한, 드라이버 프로그램에서 정의한 변수를 Spark API 함수에서 변경해도 executor가 처리하기 떄문에 드라이버 프로그램에서는 변경한 내용을 볼 수 없다.
 
-## mapPartitions()
+## RDD mapPartitions()
 [참고 stackoverflow](https://stackoverflow.com/a/39203798/5867255)
 
 ```
@@ -28,9 +89,9 @@ def map[U: ClassTag](f: T => U): RDD[U]
 def mapPartitions[U: ClassTag](f: Iterator[T] => Iterator[U], preservesPartitioning: Boolean = false): RDD[U]
 ```
 
-heavyweight initialization이 있을 경우는 mapPartitions을 쓰는 것이 좋다.\
-예를 들어서 DB 커넥션을 한번만 맺어서 처리할때는 map보다는 mapPartition을 사용.\
 map은 row 각각을 변환하고 mapPartitions은 partition(row set)을 변환한다.
+heavyweight initialization이 있을 경우는 mapPartitions을 쓰는 것이 좋다.  
+예를 들어서 DB 커넥션을 한번만 맺어서 처리할때는 map보다는 mapPartition을 사용.  
 
 ```
 val newRd = myRdd.mapPartitions(partition => {
