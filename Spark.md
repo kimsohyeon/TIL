@@ -126,6 +126,7 @@ repartitionAndSortWithinPartitions 연산은 글자 그대로 partition연산을
 
 이 연산이 가지는 장점은 여러개의 RDD에대해서 join연산을 할때 장점을 가진다. subtarct연산을 할때도 역시 장점을 가진다 key에 대해 sorting이 되어 있으니, 동일 key가 발견되면 해당 key 뒤 내용을 전혀 볼 필요가 없으니 말이다.
 
+참고자료 : https://joswlv.github.io/2018/06/05/rdd_operation_tip/
 
 ## 두개의 DataFrame 합치기 (zip two DataFrame)
  *join, zip은 연산량이 많기 때문에 되도록 피하는 것이 좋다!!*
