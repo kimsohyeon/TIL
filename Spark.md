@@ -1,5 +1,14 @@
 # Spark Tips
 
+## Spark Serializable
+[참고 블로그](https://12bme.tistory.com/436)\
+[serializable challenbes with spark and scala](https://medium.com/onzo-tech/serialization-challenges-with-spark-and-scala-a2287cd51c54)\
+Spark API에서 제공하는 데이터형식 RDD, Datafame, Dataset에 적용하는 함수는 executor가 데이터의 각 세그먼트를 처리하기 때문에 직렬화가능(serializable)해야 된다.\
+따라서 Spark API 에서 제공하는 함수(filter, map, ...)안에서 사용되는 클래스도 직렬화가능(serializable)해야된다.\
+예를 들어, dataframe은 serializable하지 않기 때문에 df1.rdd.map{ ... df2 ... } 와 같이 사용할 수 없다.
+
+또한, 드라이버 프로그램에서 정의한 변수를 Spark API 함수에서 변경해도 executor가 처리하기 떄문에 드라이버 프로그램에서는 변경한 내용을 볼 수 없다.
+
 ## Broadcast Joins (Map-Side Joins)
 한 테이블의 크기가 다른 테이블에 비해 매우 작을 경우 Broadcast Join이 Hash Join에 비해 성능이 좋다.  
 spark sql은 한 테이블의 크기가 spark.sql.autoBroadcastJoinThreshold 보다 작을 경우 Broadcast Join을 수행한다.  
@@ -31,7 +40,7 @@ key-value pair `(K,V)`의 RDD를 `K`가 같은 것들끼리 그룹으로 묶어�
 `RDD[(K,V)] => RDD[(K, Iterable[V])]`
 `Iterable[V]`에 대해 자유롭게 원하는 작업을 할 수 있음
 그룹 내의 원소를 반드시 전부 메모리에 올려놓고 계산을 해야되는 경우
-**reduceByKey, aggregateByKey가 더 효율적임. groupByKey는 map-side combine을 하지 않음. OOM 발생 가능함**
+**reduceByKey, aggregateByKey가 더 효율적임. groupByKey는 map-side combine을 하지 않음. OOM 발생가능**
 
 #### groupByKey 대신에 reduceByKey 사용하기
 ```
@@ -64,22 +73,13 @@ val revenueByDay2: RDD[(LocalDate, Double)] = revenueByBook
 * reduceByKey 와 groupByKey 차이 : https://www.ridicorp.com/blog/2018/10/04/spark-rdd-groupby/
 
 
-
-
-
 참고 자료 : https://technology.finra.org/code/using-spark-transformations-for-mpreduce-jobs.html
 
-## Spark Serializable
-[참고 블로그](https://12bme.tistory.com/436)\
-[serializable challenbes with spark and scala](https://medium.com/onzo-tech/serialization-challenges-with-spark-and-scala-a2287cd51c54)\
-Spark API에서 제공하는 데이터형식 RDD, Datafame, Dataset에 적용하는 함수는 executor가 데이터의 각 세그먼트를 처리하기 때문에 직렬화가능(serializable)해야 된다.\
-따라서 Spark API 에서 제공하는 함수(filter, map, ...)안에서 사용되는 클래스도 직렬화가능(serializable)해야된다.\
-예를 들어, dataframe은 serializable하지 않기 때문에 df1.rdd.map{ ... df2 ... } 와 같이 사용할 수 없다.
 
-또한, 드라이버 프로그램에서 정의한 변수를 Spark API 함수에서 변경해도 executor가 처리하기 떄문에 드라이버 프로그램에서는 변경한 내용을 볼 수 없다.
-
-## RDD mapPartitions()
+### mapPartitions
 [참고 stackoverflow](https://stackoverflow.com/a/39203798/5867255)
+
+groupByKey연산과 가장 크게 다른점은 record를 하나의 memory에 모으지 않고 iterator를 사용해 stream처리해 memory를 적게 사용한다.  
 
 ```
 def map[U: ClassTag](f: T => U): RDD[U]
@@ -119,6 +119,12 @@ DataSet[Log].mapPartitions{ iter =>
   }.reduce(_ ++ _)
 }
 ```
+
+### repartitionAndSortWithinPartitions
+
+repartitionAndSortWithinPartitions 연산은 글자 그대로 partition연산을 할때 key에대해서 sorting을 해준다.
+
+이 연산이 가지는 장점은 여러개의 RDD에대해서 join연산을 할때 장점을 가진다. subtarct연산을 할때도 역시 장점을 가진다 key에 대해 sorting이 되어 있으니, 동일 key가 발견되면 해당 key 뒤 내용을 전혀 볼 필요가 없으니 말이다.
 
 
 ## 두개의 DataFrame 합치기 (zip two DataFrame)
