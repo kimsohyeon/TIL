@@ -18,7 +18,7 @@
 
 
 ## MergeTree
-ClickHouse의 Engine은 데이터의 물리구조와 질의성능을 정함<br>
+ClickHouse의 Engine은 데이터의 물리구조와 질의성능을 정함  
 일반적으로 MergeTree를 사용
 
 
